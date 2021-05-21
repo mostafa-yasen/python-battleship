@@ -1,6 +1,7 @@
+from werkzeug.utils import send_file
 from battleship.models.ship import Ship
 from battleship.models.point import Point
-from battleship.exceptions import InvalidShipsCount, ShipOverflowError, ShipOverlapingError
+from battleship.exceptions import InvalidHitError, InvalidShipsCount, ShipOverflowError, ShipOverlapingError
 
 
 class Game():
@@ -50,6 +51,9 @@ class Game():
         - MISS: for invalid one
         - SINK: if it hits the last piece of a ship
         """
+        if point.x >= self.board_size or point.y >= self.board_size:
+            raise InvalidHitError
+
         if self.board[point.x][point.y] == False:
             return "HIT"
 
