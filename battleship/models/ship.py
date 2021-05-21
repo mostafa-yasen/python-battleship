@@ -9,7 +9,7 @@ class Ship():
 
     def get_ship(self):
         """yields a list of coordinates of this ship"""
-        if self.direction == "V":
+        if self.direction.upper() == "V":
             for i in range(0, self.size):
                 yield (self.point.x, self.point.y + i) 
         else:

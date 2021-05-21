@@ -36,7 +36,7 @@ def create_battleship_game():
         return jsonify({"message": e.msg}), HTTPStatus.BAD_REQUEST
     except Exception as e:
         print_exc()
-        return jsonify({"message": e}), HTTPStatus.INTERNAL_SERVER_ERROR
+        return jsonify({"message": "Something went wrong"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
     return jsonify({"message": "Game created successfully"}), HTTPStatus.OK
 
