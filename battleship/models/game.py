@@ -68,7 +68,7 @@ class Game():
                         return "HIT"
             return "SINK"
         else:
-            return "MISS"
+            return "WATER"
 
 
     def validate(self) -> None:
