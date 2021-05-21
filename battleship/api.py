@@ -47,7 +47,7 @@ def shot():
         return jsonify({"message": "Please, create a game first"}), HTTPStatus.EXPECTATION_FAILED
 
     body = request.json
-    if not (body.get("x") and body.get("x")):
+    if not (body.get("x") and body.get("y")):
         return jsonify({"message": "Invalid coordinate"}), HTTPStatus.BAD_REQUEST
 
     try:
