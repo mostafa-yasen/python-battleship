@@ -66,4 +66,6 @@ def shot():
 
 @app.route('/battleship', methods=['DELETE'])
 def delete_battleship_game():
-    return jsonify({}), HTTPStatus.NOT_IMPLEMENTED
+    # TODO: should delete the item in the session storage or the sqlite database.
+    GAME = None
+    return jsonify({}), HTTPStatus.OK
