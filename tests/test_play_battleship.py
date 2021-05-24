@@ -25,7 +25,7 @@ class TestPlayBattleship(unittest.TestCase):
 
     def test_shot_hits_ship(self):
         client = api.app.test_client(self)
-        response = client.put("/battleship", json=self.shot_misses_ship_sample)
+        response = client.put("/battleship", json=self.shot_hits_ship_sample)
         status_code = response.status_code
         self.assertEqual(status_code, 200)
         self.assertEqual(response.data["result"], "WATER")
