@@ -1,4 +1,4 @@
-from battleship import api
+from battleship.api import app
 
 if __name__ == "__main__":
-    api.app.run(debug=True)
+    app.run(debug=True)
