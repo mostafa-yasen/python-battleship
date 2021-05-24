@@ -1,14 +1,16 @@
-from werkzeug.utils import send_file
 from battleship.models.ship import Ship
 from battleship.models.point import Point
 from battleship.exceptions import InvalidHitError, InvalidShipsCount, ShipOverflowError, ShipOverlapingError
+from uuid import uuid1
 
 
 class Game():
-    def __init__(self, ships: list, board_size: int = 10) -> None:
-        self.board = []
-        self.json_ships = ships
+    def __init__(self, ships: list, board: list = [], board_size: int = 10,
+    id: str = "", json_ships: list = []) -> None:
+        self.board = board or []
+        self.json_ships = json_ships or ships
         self.board_size = board_size
+        self.id = id or uuid1().hex[:6]
         self.validate()
         self.setup()
 
@@ -16,18 +18,19 @@ class Game():
     def setup(self) -> None:
         """Configures the game board and takes each of the ships and places
         them on the board"""
-        for _ in range(self.board_size):
-            # The board will always be a square.
-            self.board.append([None] * self.board_size)
-
         self.ships = [
             Ship(
                 Point(s["x"], s["y"]), s["direction"], s["size"]
             ) for s in self.json_ships
         ]
 
-        for ship in self.ships:
-            self.place_on_board(ship)
+        if not self.board:
+            for _ in range(self.board_size):
+                # The board will always be a square.
+                self.board.append([None] * self.board_size)
+
+            for ship in self.ships:
+                self.place_on_board(ship)
 
 
     def place_on_board(self, ship) -> None:
@@ -41,7 +44,7 @@ class Game():
             if self.board[x][y]:
                 raise ShipOverlapingError
 
-            self.board[x][y] = ship
+            self.board[x][y] = ship.id
 
 
     def hit(self, point: Point) -> object:
@@ -55,20 +58,20 @@ class Game():
             raise InvalidHitError
 
         if self.board[point.x][point.y] == False:
-            return "HIT"
+            return self, "HIT"
 
         elif self.board[point.x][point.y] is not None:
             tmp_ship = self.board[point.x][point.y]
             self.board[point.x][point.y] = False
-            for i in range(self.board):
+            for i in range(len(self.board)):
                 for j in range(len(self.board[i])):
                     # TODO: enhance the looping here
-                    # loopin (x * x) times in the worrest case. 
+                    # looping (x * x) times in the worrest case.
                     if self.board[i][j] == tmp_ship:
-                        return "HIT"
-            return "SINK"
+                        return self, "HIT"
+            return self, "SINK"
         else:
-            return "WATER"
+            return self, "WATER"
 
 
     def validate(self) -> None:
@@ -86,3 +89,14 @@ class Game():
         for row in self.board:
             print(row)
         print(" = " * self.board_size)
+
+    def __eq__(self, o: object) -> bool:
+        return self.id == o.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "board": self.board,
+            "ships": [s.serialize() for s in self.ships],
+            "json_ships": self.json_ships
+        }
