@@ -7,8 +7,6 @@ from battleship.models.game import Game
 
 from battleship.exceptions import InvalidHitError, InvalidShipsCount, ShipOverflowError, ShipOverlapingError
 
-from traceback import print_exc
-
 from uuid import uuid4
 
 app = Flask(__name__)
@@ -25,18 +23,14 @@ def create_battleship_game():
         session["GAME"] = Game(body.get("ships")).serialize()
 
     except InvalidShipsCount as e:
-        print_exc()
         return jsonify({"message": e.msg}), HTTPStatus.BAD_REQUEST
 
     except ShipOverflowError as e:
-        print_exc()
         return jsonify({"message": e.msg}), HTTPStatus.BAD_REQUEST
 
     except ShipOverlapingError as e:
-        print_exc()
         return jsonify({"message": e.msg}), HTTPStatus.BAD_REQUEST
     except Exception as e:
-        print_exc()
         return jsonify({"message": "Something went wrong"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
     return jsonify({"message": "Game created successfully"}), HTTPStatus.OK
@@ -56,11 +50,9 @@ def shot():
         session["GAME"] = game.serialize()
 
     except InvalidHitError as e:
-        print_exc()
         return jsonify({"message": e.msg}), HTTPStatus.BAD_REQUEST
 
     except Exception as e:
-        print_exc()
         return jsonify({"message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
     return jsonify({"result": result}), HTTPStatus.OK
